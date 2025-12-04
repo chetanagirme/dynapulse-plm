@@ -1,0 +1,283 @@
+import { create } from 'zustand';
+import { type Product, type BOM, type Supplier, type User, type Role, type AuditLog, type ECO, type NCR, type CAPA, type Attachment } from '../types';
+import { productService, bomService, supplierService, ecoService, qualityService } from '../lib/api';
+
+interface AppState {
+    isLoading: boolean;
+    error: string | null;
+
+    products: Product[];
+    boms: BOM[];
+    suppliers: Supplier[];
+
+    // Async Actions
+    fetchData: () => Promise<void>;
+
+    addProduct: (product: Product) => Promise<void>;
+    updateProduct: (id: string, product: Partial<Product>) => Promise<void>;
+    deleteProduct: (id: string) => Promise<void>;
+
+    addBOM: (bom: BOM) => Promise<void>;
+    updateBOM: (id: string, bom: Partial<BOM>) => Promise<void>;
+    deleteBOM: (id: string) => Promise<void>;
+
+    addSupplier: (supplier: Supplier) => Promise<void>;
+    updateSupplier: (id: string, supplier: Partial<Supplier>) => Promise<void>;
+    deleteSupplier: (id: string) => Promise<void>;
+
+    // ECOs
+    ecos: ECO[];
+    addECO: (eco: ECO) => Promise<void>;
+    updateECO: (id: string, eco: Partial<ECO>) => Promise<void>;
+    deleteECO: (id: string) => Promise<void>;
+
+    // Quality
+    ncrs: NCR[];
+    capas: CAPA[];
+    addNCR: (ncr: NCR) => Promise<void>;
+    updateNCR: (id: string, ncr: Partial<NCR>) => Promise<void>;
+    addCAPA: (capa: CAPA) => Promise<void>;
+    updateCAPA: (id: string, capa: Partial<CAPA>) => Promise<void>;
+
+    // Attachments (Mock for now, or implement file upload API later)
+    addAttachment: (productId: string, attachment: Attachment) => void;
+    deleteAttachment: (productId: string, attachmentId: string) => void;
+
+    currentUser: User | null;
+    isAuthenticated: boolean;
+    login: (email: string, role: Role) => void;
+    logout: () => void;
+
+    // Audit
+    auditLogs: AuditLog[];
+    logAction: (action: string, details: string) => void;
+}
+
+export const useStore = create<AppState>((set, get) => ({
+    isLoading: false,
+    error: null,
+    products: [],
+    boms: [],
+    suppliers: [],
+    ecos: [],
+    ncrs: [],
+    capas: [],
+    auditLogs: [],
+    currentUser: null,
+    isAuthenticated: false,
+
+    fetchData: async () => {
+        set({ isLoading: true, error: null });
+        try {
+            const [products, boms, suppliers, ecos, ncrs, capas] = await Promise.all([
+                productService.getAll(),
+                bomService.getAll(),
+                supplierService.getAll(),
+                ecoService.getAll(),
+                qualityService.getNCRs(),
+                qualityService.getCAPAs(),
+            ]);
+            set({ products, boms, suppliers, ecos, ncrs, capas, isLoading: false });
+        } catch (error: any) {
+            console.error('Failed to fetch data:', error);
+            set({ error: error.message, isLoading: false });
+        }
+    },
+
+    addProduct: async (product) => {
+        try {
+            const newProduct = await productService.create(product);
+            set((state) => ({ products: [...state.products, newProduct] }));
+            get().logAction('CREATE_PRODUCT', `Created product: ${product.name}`);
+        } catch (error: any) {
+            console.error('Failed to add product:', error);
+        }
+    },
+    updateProduct: async (id, product) => {
+        try {
+            const updatedProduct = await productService.update(id, product);
+            set((state) => ({
+                products: state.products.map((p) => (p.id === id ? updatedProduct : p)),
+            }));
+            get().logAction('UPDATE_PRODUCT', `Updated product: ${id}`);
+        } catch (error: any) {
+            console.error('Failed to update product:', error);
+        }
+    },
+    deleteProduct: async (id) => {
+        try {
+            await productService.delete(id);
+            set((state) => ({
+                products: state.products.filter((p) => p.id !== id),
+            }));
+            get().logAction('DELETE_PRODUCT', `Deleted product: ${id}`);
+        } catch (error: any) {
+            console.error('Failed to delete product:', error);
+        }
+    },
+
+    addBOM: async (bom) => {
+        try {
+            const newBOM = await bomService.create(bom);
+            set((state) => ({ boms: [...state.boms, newBOM] }));
+            get().logAction('CREATE_BOM', `Created BOM: ${bom.name}`);
+        } catch (error: any) {
+            console.error('Failed to add BOM:', error);
+        }
+    },
+    updateBOM: async (id, bom) => {
+        try {
+            const updatedBOM = await bomService.update(id, bom);
+            set((state) => ({
+                boms: state.boms.map((b) => (b.id === id ? updatedBOM : b)),
+            }));
+            get().logAction('UPDATE_BOM', `Updated BOM: ${id}`);
+        } catch (error: any) {
+            console.error('Failed to update BOM:', error);
+        }
+    },
+    deleteBOM: async (id) => {
+        try {
+            await bomService.delete(id);
+            set((state) => ({
+                boms: state.boms.filter((b) => b.id !== id),
+            }));
+            get().logAction('DELETE_BOM', `Deleted BOM: ${id}`);
+        } catch (error: any) {
+            console.error('Failed to delete BOM:', error);
+        }
+    },
+
+    addSupplier: async (supplier) => {
+        try {
+            const newSupplier = await supplierService.create(supplier);
+            set((state) => ({ suppliers: [...state.suppliers, newSupplier] }));
+            get().logAction('CREATE_SUPPLIER', `Created Supplier: ${supplier.name}`);
+        } catch (error: any) {
+            console.error('Failed to add supplier:', error);
+        }
+    },
+    updateSupplier: async (id, supplier) => {
+        try {
+            const updatedSupplier = await supplierService.update(id, supplier);
+            set((state) => ({
+                suppliers: state.suppliers.map((s) => (s.id === id ? updatedSupplier : s)),
+            }));
+            get().logAction('UPDATE_SUPPLIER', `Updated Supplier: ${id}`);
+        } catch (error: any) {
+            console.error('Failed to update supplier:', error);
+        }
+    },
+    deleteSupplier: async (id) => {
+        try {
+            await supplierService.delete(id);
+            set((state) => ({
+                suppliers: state.suppliers.filter((s) => s.id !== id),
+            }));
+            get().logAction('DELETE_SUPPLIER', `Deleted Supplier: ${id}`);
+        } catch (error: any) {
+            console.error('Failed to delete supplier:', error);
+        }
+    },
+
+    addECO: async (eco) => {
+        try {
+            const newECO = await ecoService.create(eco);
+            set((state) => ({ ecos: [...state.ecos, newECO] }));
+            get().logAction('CREATE_ECO', `Created ECO: ${eco.title}`);
+        } catch (error: any) {
+            console.error('Failed to add ECO:', error);
+        }
+    },
+    updateECO: async (id, eco) => {
+        try {
+            const updatedECO = await ecoService.update(id, eco);
+            set((state) => ({
+                ecos: state.ecos.map((e) => (e.id === id ? updatedECO : e)),
+            }));
+            get().logAction('UPDATE_ECO', `Updated ECO: ${id}`);
+        } catch (error: any) {
+            console.error('Failed to update ECO:', error);
+        }
+    },
+    deleteECO: async (id) => {
+        try {
+            await ecoService.delete(id);
+            set((state) => ({
+                ecos: state.ecos.filter((e) => e.id !== id),
+            }));
+            get().logAction('DELETE_ECO', `Deleted ECO: ${id}`);
+        } catch (error: any) {
+            console.error('Failed to delete ECO:', error);
+        }
+    },
+
+    addNCR: async (ncr) => {
+        try {
+            const newNCR = await qualityService.createNCR(ncr);
+            set((state) => ({ ncrs: [...state.ncrs, newNCR] }));
+            get().logAction('CREATE_NCR', `Reported NCR: ${ncr.id}`);
+        } catch (error: any) {
+            console.error('Failed to add NCR:', error);
+        }
+    },
+    updateNCR: async (id, ncr) => {
+        try {
+            const updatedNCR = await qualityService.updateNCR(id, ncr);
+            set((state) => ({
+                ncrs: state.ncrs.map((n) => (n.id === id ? updatedNCR : n)),
+            }));
+            get().logAction('UPDATE_NCR', `Updated NCR: ${id}`);
+        } catch (error: any) {
+            console.error('Failed to update NCR:', error);
+        }
+    },
+    addCAPA: async (capa) => {
+        try {
+            const newCAPA = await qualityService.createCAPA(capa);
+            set((state) => ({ capas: [...state.capas, newCAPA] }));
+            get().logAction('CREATE_CAPA', `Created CAPA: ${capa.title}`);
+        } catch (error: any) {
+            console.error('Failed to add CAPA:', error);
+        }
+    },
+    updateCAPA: async (id, capa) => {
+        // Implement update CAPA API if needed
+        set((state) => ({
+            capas: state.capas.map((c) => (c.id === id ? { ...c, ...capa } : c)),
+        }));
+    },
+
+    // Attachments (Client-side only for now)
+    addAttachment: (productId, attachment) => set((state) => ({
+        products: state.products.map(p => p.id === productId ? { ...p, attachments: [...(p.attachments || []), attachment] } : p),
+    })),
+    deleteAttachment: (productId, attachmentId) => set((state) => ({
+        products: state.products.map(p => p.id === productId ? { ...p, attachments: p.attachments?.filter(a => a.id !== attachmentId) } : p),
+    })),
+
+    login: (email, role) => set({
+        isAuthenticated: true,
+        currentUser: {
+            id: 'u1', // Mock ID
+            name: email.split('@')[0],
+            email,
+            role,
+            avatar: `https://ui-avatars.com/api/?name=${email.split('@')[0]}&background=random`
+        }
+    }),
+    logout: () => set({ isAuthenticated: false, currentUser: null }),
+
+    logAction: (action, details) => set((state) => {
+        if (!state.currentUser) return {};
+        const newLog: AuditLog = {
+            id: crypto.randomUUID(),
+            userId: state.currentUser.id,
+            userName: state.currentUser.name,
+            action,
+            details,
+            timestamp: new Date().toISOString(),
+        };
+        return { auditLogs: [newLog, ...state.auditLogs] };
+    }),
+}));
