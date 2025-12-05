@@ -43,6 +43,9 @@ const ProductEditor = () => {
             } else {
                 await addProduct({
                     ...formData,
+                    id: crypto.randomUUID(),
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
                 } as Product);
                 success('Product created successfully');
             }
