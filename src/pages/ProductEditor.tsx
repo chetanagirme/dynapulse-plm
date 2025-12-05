@@ -47,8 +47,10 @@ const ProductEditor = () => {
                 success('Product created successfully');
             }
             navigate('/products');
-        } catch (err) {
-            error('Failed to save product');
+        } catch (err: any) {
+            console.error('Error saving product:', err);
+            const errorMessage = err.response?.data?.message || err.message || 'Failed to save product';
+            error(errorMessage);
         }
     };
 
