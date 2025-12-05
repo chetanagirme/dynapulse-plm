@@ -44,7 +44,10 @@ const ProductEditor = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!currentUser) return;
+        if (!currentUser) {
+            error('You must be logged in to save a product');
+            return;
+        }
 
         try {
             if (isEditing && id) {
