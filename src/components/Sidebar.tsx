@@ -26,7 +26,7 @@ const Sidebar = () => {
         <div className="h-screen w-64 bg-slate-900 text-white flex flex-col border-r border-slate-800">
             <div className="p-6 border-b border-slate-800">
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                    PLM System
+                    Dyna PLM
                 </h1>
             </div>
             <nav className="flex-1 p-4 space-y-2">

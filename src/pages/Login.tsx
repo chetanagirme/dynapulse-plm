@@ -82,7 +82,7 @@ const Login = () => {
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20" />
                     <div className="relative z-10 h-full flex flex-col justify-between text-white">
                         <div>
-                            <h2 className="text-2xl font-bold mb-4">Enterprise PLM System</h2>
+                            <h2 className="text-2xl font-bold mb-4">Dyna PLM System</h2>
                             <p className="text-slate-400 leading-relaxed">
                                 Streamline your product lifecycle from concept to manufacturing.
                                 Manage BOMs, suppliers, and engineering changes with role-based security.
