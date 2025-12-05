@@ -1,4 +1,4 @@
-export type ProductStatus = 'Draft' | 'Pending Approval' | 'In Review' | 'Active' | 'Obsolete';
+export type ProductStatus = 'Draft' | 'Pending Approval' | 'In Review' | 'Active' | 'Obsolete' | 'Archived';
 
 export interface Attachment {
     id: string;
