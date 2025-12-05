@@ -20,7 +20,7 @@ const productSchema = new mongoose.Schema({
     category: { type: String, default: 'Uncategorized' },
     status: {
         type: String,
-        enum: ['Draft', 'Pending Approval', 'In Review', 'Active', 'Obsolete'],
+        enum: ['Draft', 'Pending Approval', 'In Review', 'Active', 'Obsolete', 'Archived'],
         default: 'Draft'
     },
     imageUrl: String,
