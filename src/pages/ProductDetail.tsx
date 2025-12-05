@@ -59,7 +59,8 @@ const ProductDetail = () => {
 
     const canEdit = currentUser?.role === 'ENGINEER' && product.status === 'Draft' ||
         currentUser?.role === 'MANAGER' && product.status === 'Draft' ||
-        currentUser?.role === 'ADMIN';
+        currentUser?.role === 'ADMIN' ||
+        currentUser?.role === 'DGM';
 
     return (
         <div className="space-y-6">
@@ -125,7 +126,7 @@ const ProductDetail = () => {
                         </Link>
                     )}
 
-                    {(currentUser?.role === 'ADMIN' || (currentUser?.role === 'ENGINEER' && product.status === 'Draft')) && (
+                    {(currentUser?.role === 'ADMIN' || currentUser?.role === 'DGM' || (currentUser?.role === 'ENGINEER' && product.status === 'Draft')) && (
                         <button
                             onClick={handleDelete}
                             className="flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-100 rounded-lg hover:bg-red-100 text-red-600 transition-colors"
