@@ -4,10 +4,13 @@ import { ArrowLeft, Save } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { type Supplier } from '../types';
 
+import { useToast } from '../context/ToastContext';
+
 const SupplierEditor = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { suppliers, addSupplier, updateSupplier } = useStore();
+    const { success, error } = useToast();
     const isEditing = Boolean(id);
 
     const [formData, setFormData] = useState<Partial<Supplier>>({
@@ -27,18 +30,26 @@ const SupplierEditor = () => {
         }
     }, [isEditing, id, suppliers]);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (isEditing && id) {
-            updateSupplier(id, formData);
-        } else {
-            addSupplier({
-                ...formData,
-                id: crypto.randomUUID(),
-            } as Supplier);
+        try {
+            if (isEditing && id) {
+                await updateSupplier(id, formData);
+                success('Supplier updated successfully');
+            } else {
+                await addSupplier({
+                    ...formData,
+                    id: crypto.randomUUID(),
+                } as Supplier);
+                success('Supplier created successfully');
+            }
+            navigate('/suppliers');
+        } catch (err: any) {
+            console.error('Error saving supplier:', err);
+            const errorMessage = err.response?.data?.message || err.message || 'Failed to save supplier';
+            error(errorMessage);
         }
-        navigate('/suppliers');
     };
 
     return (

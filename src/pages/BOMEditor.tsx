@@ -5,10 +5,13 @@ import { useStore } from '../store/useStore';
 import { type BOM, type BOMComponent } from '../types';
 import { calculateBOMCost, calculateRecursiveBOMCost } from '../lib/calculations';
 
+import { useToast } from '../context/ToastContext';
+
 const BOMEditor = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { boms, products, addBOM, updateBOM, currentUser } = useStore();
+    const { success, error } = useToast();
     const isEditing = Boolean(id);
     const [formData, setFormData] = useState<Partial<BOM>>({
         name: '',
@@ -58,21 +61,29 @@ const BOMEditor = () => {
         });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const now = new Date().toISOString();
 
-        if (isEditing && id) {
-            updateBOM(id, { ...formData, updatedAt: now });
-        } else {
-            addBOM({
-                ...formData,
-                id: crypto.randomUUID(),
-                createdAt: now,
-                updatedAt: now,
-            } as BOM);
+        try {
+            if (isEditing && id) {
+                await updateBOM(id, { ...formData, updatedAt: now });
+                success('BOM updated successfully');
+            } else {
+                await addBOM({
+                    ...formData,
+                    id: crypto.randomUUID(),
+                    createdAt: now,
+                    updatedAt: now,
+                } as BOM);
+                success('BOM created successfully');
+            }
+            navigate('/boms');
+        } catch (err: any) {
+            console.error('Error saving BOM:', err);
+            const errorMessage = err.response?.data?.message || err.message || 'Failed to save BOM';
+            error(errorMessage);
         }
-        navigate('/boms');
     };
 
     return (

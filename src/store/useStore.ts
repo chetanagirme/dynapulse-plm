@@ -126,6 +126,7 @@ export const useStore = create<AppState>((set, get) => ({
             get().logAction('CREATE_BOM', `Created BOM: ${bom.name}`);
         } catch (error: any) {
             console.error('Failed to add BOM:', error);
+            throw error;
         }
     },
     updateBOM: async (id, bom) => {
@@ -137,6 +138,7 @@ export const useStore = create<AppState>((set, get) => ({
             get().logAction('UPDATE_BOM', `Updated BOM: ${id}`);
         } catch (error: any) {
             console.error('Failed to update BOM:', error);
+            throw error;
         }
     },
     deleteBOM: async (id) => {
@@ -148,6 +150,7 @@ export const useStore = create<AppState>((set, get) => ({
             get().logAction('DELETE_BOM', `Deleted BOM: ${id}`);
         } catch (error: any) {
             console.error('Failed to delete BOM:', error);
+            throw error;
         }
     },
 
@@ -158,6 +161,7 @@ export const useStore = create<AppState>((set, get) => ({
             get().logAction('CREATE_SUPPLIER', `Created Supplier: ${supplier.name}`);
         } catch (error: any) {
             console.error('Failed to add supplier:', error);
+            throw error;
         }
     },
     updateSupplier: async (id, supplier) => {
@@ -169,6 +173,7 @@ export const useStore = create<AppState>((set, get) => ({
             get().logAction('UPDATE_SUPPLIER', `Updated Supplier: ${id}`);
         } catch (error: any) {
             console.error('Failed to update supplier:', error);
+            throw error;
         }
     },
     deleteSupplier: async (id) => {
@@ -180,6 +185,7 @@ export const useStore = create<AppState>((set, get) => ({
             get().logAction('DELETE_SUPPLIER', `Deleted Supplier: ${id}`);
         } catch (error: any) {
             console.error('Failed to delete supplier:', error);
+            throw error;
         }
     },
 
@@ -190,6 +196,7 @@ export const useStore = create<AppState>((set, get) => ({
             get().logAction('CREATE_ECO', `Created ECO: ${eco.title}`);
         } catch (error: any) {
             console.error('Failed to add ECO:', error);
+            throw error;
         }
     },
     updateECO: async (id, eco) => {
@@ -201,6 +208,7 @@ export const useStore = create<AppState>((set, get) => ({
             get().logAction('UPDATE_ECO', `Updated ECO: ${id}`);
         } catch (error: any) {
             console.error('Failed to update ECO:', error);
+            throw error;
         }
     },
     deleteECO: async (id) => {
@@ -212,6 +220,7 @@ export const useStore = create<AppState>((set, get) => ({
             get().logAction('DELETE_ECO', `Deleted ECO: ${id}`);
         } catch (error: any) {
             console.error('Failed to delete ECO:', error);
+            throw error;
         }
     },
 
@@ -222,6 +231,7 @@ export const useStore = create<AppState>((set, get) => ({
             get().logAction('CREATE_NCR', `Reported NCR: ${ncr.id}`);
         } catch (error: any) {
             console.error('Failed to add NCR:', error);
+            throw error;
         }
     },
     updateNCR: async (id, ncr) => {
@@ -233,6 +243,7 @@ export const useStore = create<AppState>((set, get) => ({
             get().logAction('UPDATE_NCR', `Updated NCR: ${id}`);
         } catch (error: any) {
             console.error('Failed to update NCR:', error);
+            throw error;
         }
     },
     addCAPA: async (capa) => {
@@ -242,6 +253,7 @@ export const useStore = create<AppState>((set, get) => ({
             get().logAction('CREATE_CAPA', `Created CAPA: ${capa.title}`);
         } catch (error: any) {
             console.error('Failed to add CAPA:', error);
+            throw error;
         }
     },
     updateCAPA: async (id, capa) => {
