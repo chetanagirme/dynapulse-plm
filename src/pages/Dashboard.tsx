@@ -33,15 +33,13 @@ const Dashboard = () => {
 
     const getDGMStats = () => {
         const active = products.filter(p => p.status === 'Active').length;
-        const totalValue = products
-            .filter(p => p.status === 'Active')
-            .reduce((sum, p) => sum + p.cost, 0);
+        const pending = products.filter(p => p.status === 'Pending Approval').length;
         const inReview = products.filter(p => p.status === 'In Review').length;
 
         return [
-            { label: 'Active Products', value: active, icon: Package, color: 'text-green-600', bg: 'bg-green-50' },
-            { label: 'Total Value', value: `₹${totalValue.toFixed(2)}`, icon: TrendingUp, color: 'text-blue-600', bg: 'bg-blue-50' },
+            { label: 'Pending Approval', value: pending, icon: AlertCircle, color: 'text-amber-600', bg: 'bg-amber-50' },
             { label: 'Ready for Release', value: inReview, icon: CheckCircle, color: 'text-purple-600', bg: 'bg-purple-50' },
+            { label: 'Active Products', value: active, icon: Package, color: 'text-green-600', bg: 'bg-green-50' },
         ];
     };
 
@@ -107,7 +105,7 @@ const Dashboard = () => {
                         <h2 className="font-bold text-slate-900">
                             {currentUser.role === 'ENGINEER' ? 'My Drafts' :
                                 currentUser.role === 'MANAGER' ? 'Pending Approvals' :
-                                    currentUser.role === 'DGM' ? 'Ready for Release' : 'Recent Activity'}
+                                    currentUser.role === 'DGM' ? 'Approvals & Releases' : 'Recent Activity'}
                         </h2>
                     </div>
                     <div className="divide-y divide-slate-200">
@@ -115,7 +113,7 @@ const Dashboard = () => {
                             .filter(p => {
                                 if (currentUser.role === 'ENGINEER') return p.status === 'Draft';
                                 if (currentUser.role === 'MANAGER') return p.status === 'Pending Approval';
-                                if (currentUser.role === 'DGM') return p.status === 'In Review';
+                                if (currentUser.role === 'DGM') return p.status === 'In Review' || p.status === 'Pending Approval';
                                 return true;
                             })
                             .slice(0, 5)
@@ -141,7 +139,7 @@ const Dashboard = () => {
                         {products.filter(p => {
                             if (currentUser.role === 'ENGINEER') return p.status === 'Draft';
                             if (currentUser.role === 'MANAGER') return p.status === 'Pending Approval';
-                            if (currentUser.role === 'DGM') return p.status === 'In Review';
+                            if (currentUser.role === 'DGM') return p.status === 'In Review' || p.status === 'Pending Approval';
                             return true;
                         }).length === 0 && (
                                 <div className="p-8 text-center text-slate-500">
