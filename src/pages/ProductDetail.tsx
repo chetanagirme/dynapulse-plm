@@ -85,7 +85,7 @@ const ProductDetail = () => {
                         </button>
                     )}
 
-                    {currentUser?.role === 'MANAGER' && product.status === 'Pending Approval' && (
+                    {(currentUser?.role === 'MANAGER' || currentUser?.role === 'DGM') && product.status === 'Pending Approval' && (
                         <>
                             <button
                                 onClick={() => handleStatusChange('Draft')}
