@@ -17,6 +17,7 @@ const NCREditor = () => {
     const isEditing = Boolean(id);
 
     const [formData, setFormData] = useState<Partial<NCR>>({
+        title: '',
         productId: prefillProductId,
         description: '',
         severity: 'Medium',
@@ -31,6 +32,7 @@ const NCREditor = () => {
             }
         } else {
             setFormData({
+                title: '',
                 productId: prefillProductId,
                 description: '',
                 severity: 'Medium',
@@ -100,6 +102,18 @@ const NCREditor = () => {
             </div>
 
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-6">
+                <div className="space-y-2">
+                    <label className="block text-sm font-medium text-slate-700">Title</label>
+                    <input
+                        type="text"
+                        required
+                        value={formData.title}
+                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                        placeholder="Brief summary of the issue"
+                    />
+                </div>
+
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-slate-700">Affected Product</label>
                     <select

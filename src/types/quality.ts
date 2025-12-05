@@ -5,6 +5,7 @@ export type CAPAStatus = 'Open' | 'Plan Proposed' | 'Implemented' | 'Verified' |
 export interface NCR {
     id: string;
     productId: string;
+    title: string;
     description: string;
     severity: NCRSeverity;
     status: NCRStatus;
