@@ -272,7 +272,7 @@ const ProductDetail = () => {
                                 <div className="flex justify-between items-center mb-4">
                                     <h3 className="text-lg font-semibold text-slate-800">Related NCRs</h3>
                                     <Link
-                                        to="/quality/ncr/new"
+                                        to={`/quality/ncr/new?productId=${product.id}`}
                                         className="text-sm font-medium text-blue-600 hover:text-blue-700"
                                     >
                                         Report New Issue

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Save } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { type NCR, type NCRSeverity, type NCRStatus } from '../types';
@@ -9,12 +9,15 @@ import { useToast } from '../context/ToastContext';
 const NCREditor = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const prefillProductId = searchParams.get('productId') || '';
+
     const { ncrs, products, addNCR, updateNCR, currentUser } = useStore();
     const { success, error } = useToast();
     const isEditing = Boolean(id);
 
     const [formData, setFormData] = useState<Partial<NCR>>({
-        productId: '',
+        productId: prefillProductId,
         description: '',
         severity: 'Medium',
         status: 'Open',
